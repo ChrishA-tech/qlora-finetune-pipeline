@@ -1,0 +1,27 @@
+model_name: Qwen/Qwen2.5-1.5B-Instruct   # open-weight, Apache-2.0, fits a free Colab T4
+data_dir: data
+output_dir: outputs/adapter
+seed: 42
+max_seq_len: 384
+quantization:            # QLoRA: 4-bit NF4 base weights
+  load_in_4bit: true
+  quant_type: nf4
+  double_quant: true
+lora:
+  r: 16
+  alpha: 32
+  dropout: 0.05
+  target_modules: all-linear
+training:
+  epochs: 2
+  per_device_batch_size: 8
+  grad_accum_steps: 2
+  learning_rate: 2.0e-4
+  warmup_ratio: 0.05
+  logging_steps: 10
+  eval_steps: 50
+  report_to: none        # set to "mlflow" to track runs
+data:
+  n_train: 1500
+  n_val: 150
+  n_test: 200
