@@ -1,0 +1,19 @@
+name: CI
+on: [push, pull_request]
+jobs:
+  test:
+    # Unit tests cover data generation and metrics only, so the heavy GPU stack
+    # (torch, bitsandbytes, peft) is not installed here. Training needs a GPU.
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: ["3.10", "3.11", "3.12"]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+      - run: pip install pytest pyyaml numpy
+      - run: python -m pytest -q
+        env:
+          PYTHONPATH: src
